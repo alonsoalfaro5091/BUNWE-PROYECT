@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roadmap 30 Días — App + Raspberry Pi</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f; --surface: #111118; --card: #16161f; --border: #252535;
+    --accent1: #7c6af7; --accent2: #3ecfb2; --accent3: #f97b6b; --accent4: #f7c948;
+    --text: #e8e8f0; --muted: #6b6b85; --green: #4ade80; --red: #f87171;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; padding: 2rem 1.5rem 5rem; max-width: 1000px; margin: 0 auto; }
+
+  /* NAV */
+  .nav-pills {
+    display: flex; gap: 0.4rem; flex-wrap: wrap;
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,10,15,0.92); backdrop-filter: blur(12px);
+    padding: 0.75rem 0; margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-pill {
+    font-family: 'Space Mono', monospace; font-size: 0.62rem; letter-spacing: 0.08em;
+    padding: 0.3rem 0.7rem; border-radius: 99px; border: 1px solid var(--border);
+    color: var(--muted); cursor: pointer; transition: all 0.15s; text-decoration: none;
+    white-space: nowrap;
+  }
+  .nav-pill:hover, .nav-pill.active { color: var(--text); border-color: var(--accent1); background: rgba(124,106,247,0.1); }
+
+  /* HEADER */
+  header { text-align: center; margin-bottom: 3rem; }
+  .badge { display: inline-block; background: rgba(124,106,247,0.15); border: 1px solid rgba(124,106,247,0.4); color: var(--accent1); font-family: 'Space Mono', monospace; font-size: 0.68rem; letter-spacing: 0.15em; padding: 0.3rem 0.9rem; border-radius: 2rem; margin-bottom: 1rem; }
+  h1 { font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; }
+  h1 span { color: var(--accent1); }
+  .subtitle { color: var(--muted); font-size: 0.88rem; margin-top: 0.6rem; font-family: 'Space Mono', monospace; }
+
+  /* SECTION */
+  .section-title { font-family: 'Space Mono', monospace; font-size: 0.67rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin: 3rem 0 1.1rem; display: flex; align-items: center; gap: 0.7rem; }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* SKILLS */
+  .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.65rem; }
+  .skill-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 0.85rem 1rem; display: flex; align-items: center; gap: 0.7rem; }
+  .skill-icon { font-size: 1.2rem; width: 30px; text-align: center; flex-shrink: 0; }
+  .skill-name { font-weight: 700; font-size: 0.8rem; }
+  .skill-status { font-size: 0.68rem; font-family: 'Space Mono', monospace; margin-top: 0.1rem; }
+  .ok { color: var(--green); } .learn { color: var(--accent4); } .new { color: var(--accent3); }
+
+  /* JSON BOX */
+  .json-box { background: var(--card); border: 1px solid rgba(62,207,178,0.3); border-radius: 16px; overflow: hidden; }
+  .json-header { background: rgba(62,207,178,0.07); padding: 0.9rem 1.25rem; display: flex; align-items: center; gap: 0.7rem; border-bottom: 1px solid rgba(62,207,178,0.2); }
+  .json-header-title { font-weight: 700; font-size: 0.92rem; }
+  .json-header-sub { font-size: 0.72rem; color: var(--muted); font-family: 'Space Mono', monospace; }
+  .json-body { display: grid; grid-template-columns: 1fr 1fr; }
+  .json-col { padding: 1rem 1.2rem; }
+  .json-col:first-child { border-right: 1px solid var(--border); }
+  .json-col-title { font-family: 'Space Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 0.7rem; text-transform: uppercase; }
+  pre { font-family: 'Space Mono', monospace; font-size: 0.7rem; line-height: 1.7; color: #c8f0e8; background: rgba(0,0,0,0.3); border-radius: 8px; padding: 0.85rem; overflow-x: auto; }
+  .json-analogy { font-size: 0.8rem; color: #b8b8d0; line-height: 1.6; }
+  .analogy-item { display: flex; gap: 0.5rem; align-items: flex-start; margin-bottom: 0.55rem; }
+  .analogy-arrow { color: var(--accent2); font-family: 'Space Mono', monospace; font-size: 0.75rem; flex-shrink: 0; margin-top: 0.1rem; }
+
+  /* GIT */
+  .git-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.75rem; }
+  .git-concept { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.1rem; }
+  .git-concept-title { font-weight: 700; font-size: 0.85rem; margin-bottom: 0.5rem; }
+  .git-concept p { font-size: 0.78rem; color: #b0b0cc; line-height: 1.55; }
+  .git-flow { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.25rem; margin-top: 0.75rem; }
+  .git-flow-title { font-family: 'Space Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; margin-bottom: 0.75rem; }
+  .git-steps { display: flex; align-items: center; flex-wrap: wrap; gap: 0.3rem; }
+  .git-step { background: rgba(124,106,247,0.1); border: 1px solid rgba(124,106,247,0.25); border-radius: 7px; padding: 0.45rem 0.7rem; font-size: 0.72rem; font-family: 'Space Mono', monospace; color: var(--accent1); }
+  .git-arrow { color: var(--muted); padding: 0 0.2rem; font-size: 0.8rem; }
+
+  /* WEEKS */
+  .weeks { display: flex; flex-direction: column; gap: 1rem; }
+  .week-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+  .week-header { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); }
+  .week-num { font-family: 'Space Mono', monospace; font-size: 0.6rem; font-weight: 700; width: 48px; height: 48px; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.1rem; flex-shrink: 0; }
+  .week-num .big { font-size: 1.2rem; line-height: 1; }
+  .w1 .week-num { background: rgba(124,106,247,0.15); color: var(--accent1); border: 1px solid rgba(124,106,247,0.3); }
+  .w2 .week-num { background: rgba(62,207,178,0.12); color: var(--accent2); border: 1px solid rgba(62,207,178,0.3); }
+  .w3 .week-num { background: rgba(249,123,107,0.12); color: var(--accent3); border: 1px solid rgba(249,123,107,0.3); }
+  .w4 .week-num { background: rgba(247,201,72,0.12); color: var(--accent4); border: 1px solid rgba(247,201,72,0.3); }
+  .week-meta { flex: 1; }
+  .week-label { font-weight: 700; font-size: 0.95rem; }
+  .week-sub { font-size: 0.73rem; color: var(--muted); margin-top: 0.12rem; font-family: 'Space Mono', monospace; }
+  .week-tags { display: flex; gap: 0.35rem; flex-wrap: wrap; justify-content: flex-end; }
+  .tag { font-family: 'Space Mono', monospace; font-size: 0.58rem; padding: 0.18rem 0.5rem; border-radius: 99px; border: 1px solid; white-space: nowrap; }
+  .tag-purple { color: var(--accent1); border-color: rgba(124,106,247,0.4); background: rgba(124,106,247,0.07); }
+  .tag-teal   { color: var(--accent2); border-color: rgba(62,207,178,0.4);  background: rgba(62,207,178,0.07);  }
+  .tag-red    { color: var(--accent3); border-color: rgba(249,123,107,0.4); background: rgba(249,123,107,0.07); }
+  .tag-yellow { color: var(--accent4); border-color: rgba(247,201,72,0.4);  background: rgba(247,201,72,0.07);  }
+  .week-body { display: grid; grid-template-columns: 1fr 1fr; }
+  .week-col { padding: 1rem 1.2rem; }
+  .week-col:first-child { border-right: 1px solid var(--border); }
+  .week-col-title { font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.13em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem; }
+  .day-list { list-style: none; display: flex; flex-direction: column; gap: 0.55rem; }
+  .day-list li { display: grid; grid-template-columns: 46px 1fr; gap: 0.6rem; align-items: start; font-size: 0.8rem; line-height: 1.4; }
+  .day-range { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--muted); padding-top: 0.05rem; text-align: right; }
+  .day-task { color: #c0c0dc; }
+  .day-task strong { color: var(--text); }
+  .goal-box { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 8px; padding: 0.55rem 0.85rem; font-size: 0.73rem; color: var(--muted); margin-top: 0.9rem; font-family: 'Space Mono', monospace; display: flex; align-items: center; gap: 0.5rem; }
+  .goal-box::before { content: '🎯'; }
+
+  /* TEAM MINI */
+  .team-mini { display: flex; flex-direction: column; gap: 0.45rem; }
+  .member-mini { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 9px; padding: 0.6rem 0.8rem; display: flex; gap: 0.6rem; align-items: flex-start; }
+  .member-badge { font-family: 'Space Mono', monospace; font-size: 0.58rem; padding: 0.18rem 0.48rem; border-radius: 5px; white-space: nowrap; flex-shrink: 0; margin-top: 0.05rem; font-weight: 700; }
+  .mb1 { background: rgba(124,106,247,0.15); color: var(--accent1); }
+  .mb2 { background: rgba(62,207,178,0.12); color: var(--accent2); }
+  .mb3 { background: rgba(249,123,107,0.12); color: var(--accent3); }
+  .mb4 { background: rgba(247,201,72,0.12); color: var(--accent4); }
+  .member-mini-task { font-size: 0.76rem; color: #b0b0cc; line-height: 1.45; }
+  .member-mini-task strong { color: var(--text); }
+
+  /* TEAM FULL */
+  .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; }
+  .member-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1.1rem; }
+  .member-header { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.8rem; }
+  .avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+  .a1{background:rgba(124,106,247,0.2);} .a2{background:rgba(62,207,178,0.2);} .a3{background:rgba(249,123,107,0.2);} .a4{background:rgba(247,201,72,0.2);}
+  .member-role { font-weight: 700; font-size: 0.85rem; }
+  .member-stack { font-size: 0.68rem; color: var(--muted); font-family: 'Space Mono', monospace; margin-top: 0.1rem; }
+  .task-list { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+  .task-list li { font-size: 0.77rem; color: #b0b0cc; display: flex; align-items: flex-start; gap: 0.45rem; }
+  .task-list li::before { content: '›'; color: var(--muted); }
+
+  /* ===== GUÍAS DE CONFIGURACIÓN ===== */
+  .guide-tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .guide-tab {
+    font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.08em;
+    padding: 0.35rem 0.85rem; border-radius: 8px; border: 1px solid var(--border);
+    color: var(--muted); cursor: pointer; transition: all 0.15s;
+  }
+  .guide-tab.active, .guide-tab:hover { color: var(--text); border-color: var(--accent2); background: rgba(62,207,178,0.08); }
+  .guide-panel { display: none; }
+  .guide-panel.active { display: block; }
+
+  .guide-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+  .guide-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.9rem; }
+  .guide-icon { font-size: 1.6rem; }
+  .guide-title { font-weight: 700; font-size: 1rem; }
+  .guide-sub { font-size: 0.72rem; color: var(--muted); font-family: 'Space Mono', monospace; margin-top: 0.15rem; }
+  .guide-body { padding: 1.25rem; }
+
+  .step-block { margin-bottom: 1.5rem; }
+  .step-block:last-child { margin-bottom: 0; }
+  .step-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 6px;
+    background: rgba(62,207,178,0.15); color: var(--accent2);
+    font-family: 'Space Mono', monospace; font-size: 0.65rem; font-weight: 700;
+    flex-shrink: 0; margin-right: 0.5rem;
+  }
+  .step-title { font-weight: 700; font-size: 0.88rem; display: flex; align-items: center; margin-bottom: 0.55rem; }
+  .step-desc { font-size: 0.8rem; color: #b8b8d0; line-height: 1.55; margin-bottom: 0.7rem; }
+
+  .cmd-block {
+    background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px; overflow: hidden; margin: 0.5rem 0;
+  }
+  .cmd-label { font-family: 'Space Mono', monospace; font-size: 0.58rem; color: var(--muted); padding: 0.4rem 0.9rem 0.2rem; letter-spacing: 0.1em; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .cmd-content { padding: 0.65rem 0.9rem; }
+  .cmd-line { display: flex; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.35rem; }
+  .cmd-line:last-child { margin-bottom: 0; }
+  .cmd-prompt { color: var(--accent2); font-family: 'Space Mono', monospace; font-size: 0.7rem; flex-shrink: 0; margin-top: 0.05rem; }
+  .cmd-text { font-family: 'Space Mono', monospace; font-size: 0.72rem; color: #e2ffe8; line-height: 1.5; word-break: break-all; }
+  .cmd-comment { font-family: 'Space Mono', monospace; font-size: 0.68rem; color: #4a7a5a; font-style: normal; }
+
+  .info-box { background: rgba(124,106,247,0.07); border: 1px solid rgba(124,106,247,0.25); border-radius: 9px; padding: 0.65rem 0.9rem; font-size: 0.78rem; color: #c0b8f8; margin: 0.6rem 0; display: flex; gap: 0.5rem; align-items: flex-start; line-height: 1.5; }
+  .warn-box { background: rgba(247,201,72,0.07); border: 1px solid rgba(247,201,72,0.25); border-radius: 9px; padding: 0.65rem 0.9rem; font-size: 0.78rem; color: #f7e8a0; margin: 0.6rem 0; display: flex; gap: 0.5rem; align-items: flex-start; line-height: 1.5; }
+  .ok-box { background: rgba(74,222,128,0.07); border: 1px solid rgba(74,222,128,0.25); border-radius: 9px; padding: 0.65rem 0.9rem; font-size: 0.78rem; color: #9af0b8; margin: 0.6rem 0; display: flex; gap: 0.5rem; align-items: flex-start; line-height: 1.5; }
+
+  code { font-family: 'Space Mono', monospace; font-size: 0.7rem; background: rgba(255,255,255,0.08); padding: 0.12rem 0.42rem; border-radius: 4px; color: var(--accent2); }
+
+  .guide-divider { height: 1px; background: var(--border); margin: 1.2rem 0; }
+
+  /* REMOTE */
+  .remote-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem; }
+  .remote-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1.1rem 1.2rem; }
+  .remote-card-title { font-weight: 700; font-size: 0.88rem; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+  .remote-rec { color: var(--green); font-family: 'Space Mono', monospace; font-size: 0.58rem; background: rgba(74,222,128,0.1); padding: 0.15rem 0.45rem; border-radius: 4px; border: 1px solid rgba(74,222,128,0.2); }
+  .remote-steps { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; counter-reset: steps; }
+  .remote-steps li { counter-increment: steps; display: flex; gap: 0.5rem; font-size: 0.77rem; color: #b8b8d0; align-items: flex-start; }
+  .remote-steps li::before { content: counter(steps); font-family: 'Space Mono', monospace; font-size: 0.6rem; min-width: 17px; height: 17px; background: rgba(124,106,247,0.15); color: var(--accent1); border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 0.05rem; }
+  .pros-cons { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.5rem; }
+  .pro { font-size: 0.73rem; color: var(--green); display: flex; gap: 0.4rem; }
+  .con { font-size: 0.73rem; color: #888; display: flex; gap: 0.4rem; }
+
+  /* COURSES */
+  .courses-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .course-section-title { font-family: 'Space Mono', monospace; font-size: 0.62rem; letter-spacing: 0.13em; text-transform: uppercase; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.5rem; }
+  .course-section-title span { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+  .course-card { background: var(--card); border: 1px solid var(--border); border-radius: 11px; padding: 0.8rem 1rem; display: flex; align-items: center; gap: 0.85rem; text-decoration: none; color: inherit; transition: border-color 0.2s; margin-bottom: 0.45rem; }
+  .course-card:hover { border-color: var(--accent1); background: rgba(124,106,247,0.04); }
+  .course-logo { width: 32px; height: 32px; border-radius: 7px; background: #c00; display: flex; align-items: center; justify-content: center; font-size: 0.52rem; flex-shrink: 0; color: white; font-weight: 700; font-family: 'Space Mono', monospace; }
+  .course-info { flex: 1; min-width: 0; }
+  .course-title { font-weight: 700; font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .course-meta { font-size: 0.68rem; color: var(--muted); font-family: 'Space Mono', monospace; margin-top: 0.1rem; }
+  .course-arrow { color: var(--muted); font-size: 0.85rem; flex-shrink: 0; }
+
+  /* RULES */
+  .footer-rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.7rem; }
+  .rule-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.1rem; font-size: 0.79rem; color: #b0b0cc; line-height: 1.5; }
+  .rule-num { font-family: 'Space Mono', monospace; font-size: 1.3rem; font-weight: 700; color: var(--accent1); opacity: 0.3; display: block; margin-bottom: 0.3rem; }
+
+  @media (max-width: 660px) {
+    .week-body, .json-body, .courses-cols { grid-template-columns: 1fr; }
+    .week-col:first-child, .json-col:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+    .week-tags { display: none; }
+    .nav-pills { gap: 0.3rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav-pills">
+  <a class="nav-pill" href="#estado">Estado</a>
+  <a class="nav-pill" href="#json">JSON</a>
+  <a class="nav-pill" href="#git">Git</a>
+  <a class="nav-pill" href="#semanas">Semanas</a>
+  <a class="nav-pill" href="#equipo">Equipo</a>
+  <a class="nav-pill" href="#guias">📖 Guías Pi</a>
+  <a class="nav-pill" href="#remoto">Acceso Remoto</a>
+  <a class="nav-pill" href="#cursos">Cursos</a>
+  <a class="nav-pill" href="#reglas">Reglas</a>
+</nav>
+
+<header>
+  <div class="badge">ROADMAP COMPLETO · 30 DÍAS · 4 PERSONAS</div>
+  <h1>App + <span>Raspberry Pi</span><br>De cero a MVP</h1>
+  <p class="subtitle">Flutter · FastAPI · MySQL · Git/GitHub · SSH · Tailscale</p>
+</header>
+
+<!-- ESTADO -->
+<div class="section-title" id="estado">Estado actual del equipo</div>
+<div class="skills-grid">
+  <div class="skill-card"><div class="skill-icon">🐍</div><div><div class="skill-name">Python</div><div class="skill-status ok">✓ Tienes bases</div></div></div>
+  <div class="skill-card"><div class="skill-icon">🗄️</div><div><div class="skill-name">MySQL / SQL</div><div class="skill-status ok">✓ Dominado</div></div></div>
+  <div class="skill-card"><div class="skill-icon">📐</div><div><div class="skill-name">Data Modeler / Draw.io</div><div class="skill-status ok">✓ Dominado</div></div></div>
+  <div class="skill-card"><div class="skill-icon">📱</div><div><div class="skill-name">Flutter / Dart</div><div class="skill-status learn">⟳ Aprendiendo</div></div></div>
+  <div class="skill-card"><div class="skill-icon">⚡</div><div><div class="skill-name">FastAPI</div><div class="skill-status new">★ Por aprender</div></div></div>
+  <div class="skill-card"><div class="skill-icon">🥧</div><div><div class="skill-name">Raspberry Pi OS + SSH</div><div class="skill-status new">★ Por aprender</div></div></div>
+  <div class="skill-card"><div class="skill-icon">🌐</div><div><div class="skill-name">Acceso remoto</div><div class="skill-status new">★ Por aprender</div></div></div>
+  <div class="skill-card"><div class="skill-icon">🔀</div><div><div class="skill-name">Git / GitHub</div><div class="skill-status new">★ Por aprender</div></div></div>
+</div>
+
+<!-- JSON -->
+<div class="section-title" id="json">¿Qué es JSON? — El idioma común de tu app</div>
+<div class="json-box">
+  <div class="json-header">
+    <div>
+      <div class="json-header-title">📦 JSON = paquete de datos entre Flutter y Python</div>
+      <div class="json-header-sub">Como un diccionario Python que viaja por la red</div>
+    </div>
+  </div>
+  <div class="json-body">
+    <div class="json-col">
+      <div class="json-col-title">Así se ve tu JSON de sueño</div>
+      <pre>{
+  "puntuacion": 85,
+  "horas": 7.5,
+  "racha_dias": 5,
+  "ultima_noche": "2025-05-28",
+  "historial": [
+    { "dia": "Lun", "horas": 7.0 },
+    { "dia": "Mar", "horas": 6.5 },
+    { "dia": "Mie", "horas": 8.0 }
+  ]
+}</pre>
+    </div>
+    <div class="json-col">
+      <div class="json-col-title">Cómo entenderlo sin complicarse</div>
+      <div class="json-analogy">
+        <div class="analogy-item"><span class="analogy-arrow">→</span><span>Es idéntico a un <strong>diccionario Python</strong>: clave + valor</span></div>
+        <div class="analogy-item"><span class="analogy-arrow">→</span><span><strong>Python lo genera</strong> y lo manda. <strong>Flutter lo recibe</strong> y pinta la UI</span></div>
+        <div class="analogy-item"><span class="analogy-arrow">→</span><span>Es texto plano: puedes verlo en el navegador escribiendo la IP de la Pi</span></div>
+        <div class="analogy-item"><span class="analogy-arrow">→</span><span><strong>{ }</strong> = un objeto (una fila). <strong>[ ]</strong> = una lista de objetos</span></div>
+        <div class="analogy-item"><span class="analogy-arrow">→</span><span>No hay nada que instalar para entenderlo, se lee solo</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GIT -->
+<div class="section-title" id="git">Git & GitHub — Control de versiones para 4 personas</div>
+<div class="git-grid">
+  <div class="git-concept"><div class="git-concept-title">🔀 ¿Qué es Git?</div><p>Guarda el historial de tu código. Cada avance es una "foto". Si algo se rompe, vuelves a una foto anterior. Funciona en tu PC sin internet.</p></div>
+  <div class="git-concept"><div class="git-concept-title">☁️ ¿Qué es GitHub?</div><p>Donde subes esas fotos a la nube. Los 4 del equipo descargan el código actualizado y suben sus cambios. Google Drive pero para código.</p></div>
+  <div class="git-concept"><div class="git-concept-title">🌿 Ramas (branches)</div><p>Cada uno trabaja en su rama sin tocar el código del otro. <code>backend</code>, <code>flutter-ui</code>, <code>flutter-logica</code>. Al terminar, se unen a <code>main</code>.</p></div>
+  <div class="git-concept"><div class="git-concept-title">⚡ Los 4 comandos del 90%</div><p><code>git pull</code> bajar lo nuevo<br><code>git add .</code> marcar cambios<br><code>git commit -m "msg"</code> sacar foto<br><code>git push</code> subir a GitHub</p></div>
+</div>
+<div class="git-flow">
+  <div class="git-flow-title">Flujo diario del equipo</div>
+  <div class="git-steps">
+    <div class="git-step">git pull</div><div class="git-arrow">→</div>
+    <div class="git-step">Trabajar</div><div class="git-arrow">→</div>
+    <div class="git-step">git add .</div><div class="git-arrow">→</div>
+    <div class="git-step">git commit -m "descripción"</div><div class="git-arrow">→</div>
+    <div class="git-step">git push</div><div class="git-arrow">→</div>
+    <div class="git-step">✓ Todos actualizados</div>
+  </div>
+</div>
+
+<!-- SEMANAS -->
+<div class="section-title" id="semanas">Planificación semanal + división del equipo</div>
+<div class="weeks">
+
+  <div class="week-card w1">
+    <div class="week-header">
+      <div class="week-num"><span>SEM</span><span class="big">1</span></div>
+      <div class="week-meta"><div class="week-label">El corazón del servidor</div><div class="week-sub">Días 1–7 · Pi OS + SSH + MySQL + FastAPI + Git</div></div>
+      <div class="week-tags"><span class="tag tag-purple">Backend</span><span class="tag tag-purple">SSH</span><span class="tag tag-purple">Git</span></div>
+    </div>
+    <div class="week-body">
+      <div class="week-col">
+        <div class="week-col-title">📅 Tareas de la semana</div>
+        <ul class="day-list">
+          <li><span class="day-range">D 1</span><span class="day-task"><strong>GitHub</strong> — Crear repo con carpetas <code>/backend</code> y <code>/flutter</code>. Todos clonan. Cada uno crea su rama.</span></li>
+          <li><span class="day-range">D 1–2</span><span class="day-task"><strong>Pi OS + SSH</strong> — Grabar OS con Raspberry Pi Imager, habilitar SSH y WiFi. Conectarse desde la PC.</span></li>
+          <li><span class="day-range">D 3–4</span><span class="day-task"><strong>MySQL</strong> — Instalar MariaDB, asegurar con contraseña, crear BD y tablas con Data Modeler.</span></li>
+          <li><span class="day-range">D 5–7</span><span class="day-task"><strong>FastAPI</strong> — Instalar FastAPI + Uvicorn. Crear <code>GET /historial</code> y <code>POST /guardar</code>. Probar en el navegador.</span></li>
+        </ul>
+        <div class="goal-box">Meta: Ver el JSON desde otra PC en la misma red</div>
+      </div>
+      <div class="week-col">
+        <div class="week-col-title">👥 Quién hace qué</div>
+        <div class="team-mini">
+          <div class="member-mini"><span class="member-badge mb1">P1 Backend</span><span class="member-mini-task">Instala Pi OS, configura SSH e IP fija. Instala FastAPI. Crea los endpoints.</span></div>
+          <div class="member-mini"><span class="member-badge mb2">P2 BD</span><span class="member-mini-task">Diseña el modelo con Data Modeler. Instala MySQL en la Pi. Crea tablas y datos de prueba.</span></div>
+          <div class="member-mini"><span class="member-badge mb3">P3 UI</span><span class="member-mini-task">Instala Flutter y Android Studio. Estudia curso Flutter. Proyecto base en rama <code>flutter-ui</code>.</span></div>
+          <div class="member-mini"><span class="member-badge mb4">P4 Lógica</span><span class="member-mini-task"><strong>Crea el repo GitHub.</strong> Configura ramas. Aprende estructura de proyectos Dart.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="week-card w2">
+    <div class="week-header">
+      <div class="week-num"><span>SEM</span><span class="big">2</span></div>
+      <div class="week-meta"><div class="week-label">Inmersión en Flutter</div><div class="week-sub">Días 8–14 · UI Bento oscuro + JSON acordado</div></div>
+      <div class="week-tags"><span class="tag tag-teal">Flutter</span><span class="tag tag-teal">Dart</span><span class="tag tag-teal">UI</span></div>
+    </div>
+    <div class="week-body">
+      <div class="week-col">
+        <div class="week-col-title">📅 Tareas de la semana</div>
+        <ul class="day-list">
+          <li><span class="day-range">D 8–9</span><span class="day-task"><strong>Widgets base</strong> — Container, BoxDecoration, Column, Row. StatelessWidget vs StatefulWidget.</span></li>
+          <li><span class="day-range">D 10–11</span><span class="day-task"><strong>Pantalla Home Bento</strong> — Tarjetas oscuras: Puntuación, Racha, Horas. Datos fijos en el código.</span></li>
+          <li><span class="day-range">D 12–13</span><span class="day-task"><strong>Pantalla Historial</strong> — Gráfico de barras con Containers de altura variable.</span></li>
+          <li><span class="day-range">D 14</span><span class="day-task"><strong>JSON acordado en equipo</strong> — Todo el equipo confirma la estructura exacta del JSON del servidor.</span></li>
+        </ul>
+        <div class="goal-box">Meta: Pantallas maquetadas con diseño oscuro (datos fijos)</div>
+      </div>
+      <div class="week-col">
+        <div class="week-col-title">👥 Quién hace qué</div>
+        <div class="team-mini">
+          <div class="member-mini"><span class="member-badge mb1">P1 Backend</span><span class="member-mini-task">Refina endpoints. Agrega validaciones básicas. Documenta el JSON de respuesta.</span></div>
+          <div class="member-mini"><span class="member-badge mb2">P2 BD</span><span class="member-mini-task">Puebla MySQL con 7 días de historial realista. Ayuda a conectar Python ↔ MySQL.</span></div>
+          <div class="member-mini"><span class="member-badge mb3">P3 UI</span><span class="member-mini-task"><strong>Lidera esta semana.</strong> Construye pantallas Home e Historial en Bento oscuro.</span></div>
+          <div class="member-mini"><span class="member-badge mb4">P4 Lógica</span><span class="member-mini-task">Crea modelos Dart del JSON acordado. Prepara servicio HTTP sin conectar aún.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="week-card w3">
+    <div class="week-header">
+      <div class="week-num"><span>SEM</span><span class="big">3</span></div>
+      <div class="week-meta"><div class="week-label">El puente mágico</div><div class="week-sub">Días 15–21 · Flutter ⇄ FastAPI ⇄ MySQL</div></div>
+      <div class="week-tags"><span class="tag tag-red">HTTP</span><span class="tag tag-red">JSON</span><span class="tag tag-red">async</span></div>
+    </div>
+    <div class="week-body">
+      <div class="week-col">
+        <div class="week-col-title">📅 Tareas de la semana</div>
+        <ul class="day-list">
+          <li><span class="day-range">D 15–16</span><span class="day-task"><strong>Paquete http</strong> — async/await en Dart, petición GET a la Pi, ver respuesta cruda.</span></li>
+          <li><span class="day-range">D 17–18</span><span class="day-task"><strong>Parsear JSON</strong> — JSON → clases Dart. Igual que un dict Python con clase encima.</span></li>
+          <li><span class="day-range">D 19–20</span><span class="day-task"><strong>FutureBuilder</strong> — Spinner de carga → datos reales del MySQL pintados en Bento.</span></li>
+          <li><span class="day-range">D 21</span><span class="day-task"><strong>POST /guardar</strong> — Enviar datos desde el teléfono y confirmar en MySQL.</span></li>
+        </ul>
+        <div class="goal-box">Meta: Números reales del MySQL aparecen en la app</div>
+      </div>
+      <div class="week-col">
+        <div class="week-col-title">👥 Quién hace qué</div>
+        <div class="team-mini">
+          <div class="member-mini"><span class="member-badge mb1">P1 Backend</span><span class="member-mini-task">Soporte y corrección de bugs del servidor. Verifica que los endpoints respondan bien.</span></div>
+          <div class="member-mini"><span class="member-badge mb2">P2 BD</span><span class="member-mini-task">Revisa que las consultas MySQL sean correctas. Optimiza si hay lentitud.</span></div>
+          <div class="member-mini"><span class="member-badge mb3">P3 UI</span><span class="member-mini-task">Adapta widgets a FutureBuilder. Agrega spinner y mensaje de error si la Pi está apagada.</span></div>
+          <div class="member-mini"><span class="member-badge mb4">P4 Lógica</span><span class="member-mini-task"><strong>Lidera esta semana.</strong> Integra HTTP, parsea JSON, conecta modelos con la UI de P3.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="week-card w4">
+    <div class="week-header">
+      <div class="week-num"><span>SEM</span><span class="big">4</span></div>
+      <div class="week-meta"><div class="week-label">Pulido, remoto y APK</div><div class="week-sub">Días 22–30 · Tailscale + APK final + pruebas</div></div>
+      <div class="week-tags"><span class="tag tag-yellow">APK</span><span class="tag tag-yellow">Tailscale</span><span class="tag tag-yellow">Pruebas</span></div>
+    </div>
+    <div class="week-body">
+      <div class="week-col">
+        <div class="week-col-title">📅 Tareas de la semana</div>
+        <ul class="day-list">
+          <li><span class="day-range">D 22–23</span><span class="day-task"><strong>Navegación + POST</strong> — Barra inferior funcionando. Formulario de registro de noche de sueño.</span></li>
+          <li><span class="day-range">D 24–25</span><span class="day-task"><strong>Pulido visual</strong> — Fuentes, transiciones, error si la Pi está apagada.</span></li>
+          <li><span class="day-range">D 26–27</span><span class="day-task"><strong>Tailscale en la Pi</strong> — Instalar, autenticar, autoarranque al encender. Instalar en los 4 teléfonos.</span></li>
+          <li><span class="day-range">D 28–30</span><span class="day-task"><strong>APK + prueba de fuego</strong> — Generar APK. Probar fuera del WiFi de casa con Tailscale activo.</span></li>
+        </ul>
+        <div class="goal-box">Meta: App en 4 teléfonos funcionando desde cualquier red</div>
+      </div>
+      <div class="week-col">
+        <div class="week-col-title">👥 Quién hace qué</div>
+        <div class="team-mini">
+          <div class="member-mini"><span class="member-badge mb1">P1 Backend</span><span class="member-mini-task">Instala Tailscale en la Pi. Configura autoarranque de FastAPI al encender.</span></div>
+          <div class="member-mini"><span class="member-badge mb2">P2 BD</span><span class="member-mini-task">Backup de la BD. Prueba que el formulario POST guarda bien los datos.</span></div>
+          <div class="member-mini"><span class="member-badge mb3">P3 UI</span><span class="member-mini-task">Pule detalles visuales. <strong>Genera el APK.</strong> Coordina pruebas en los 4 teléfonos.</span></div>
+          <div class="member-mini"><span class="member-badge mb4">P4 Lógica</span><span class="member-mini-task">Actualiza URL en Flutter a la IP de Tailscale. Prueba fuera del WiFi de casa.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- EQUIPO RESUMEN -->
+<div class="section-title" id="equipo">Resumen del equipo — roles completos</div>
+<div class="team-grid">
+  <div class="member-card"><div class="member-header"><div class="avatar a1">🛠️</div><div><div class="member-role">Persona 1</div><div class="member-stack">Backend Lead</div></div></div><ul class="task-list"><li>Pi OS + SSH + IP fija</li><li>FastAPI + Uvicorn + endpoints</li><li>Python ↔ MySQL</li><li>Tailscale en la Pi</li><li>Autoarranque del servidor</li></ul></div>
+  <div class="member-card"><div class="member-header"><div class="avatar a2">🗄️</div><div><div class="member-role">Persona 2</div><div class="member-stack">Database Lead</div></div></div><ul class="task-list"><li>Diseño tablas con Data Modeler</li><li>MySQL en la Pi</li><li>Datos de prueba realistas</li><li>Define contrato JSON</li><li>Backups de la BD</li></ul></div>
+  <div class="member-card"><div class="member-header"><div class="avatar a3">🎨</div><div><div class="member-role">Persona 3</div><div class="member-stack">Flutter UI Lead</div></div></div><ul class="task-list"><li>Pantallas Bento oscuras</li><li>Widgets, gráficos, transiciones</li><li>FutureBuilder + spinner</li><li>Detalles visuales finales</li><li>Genera APK</li></ul></div>
+  <div class="member-card"><div class="member-header"><div class="avatar a4">🔌</div><div><div class="member-role">Persona 4</div><div class="member-stack">Flutter Lógica Lead</div></div></div><ul class="task-list"><li>Repositorio GitHub</li><li>Modelos Dart del JSON</li><li>Servicio HTTP async/await</li><li>Conexión Flutter ↔ Pi</li><li>Pruebas con Tailscale</li></ul></div>
+</div>
+
+<!-- ===== GUÍAS DE CONFIGURACIÓN ===== -->
+<div class="section-title" id="guias">📖 Guías de configuración — paso a paso con comandos</div>
+
+<div class="guide-tabs">
+  <div class="guide-tab active" onclick="showGuide('ssh')">🔌 SSH + Pi OS</div>
+  <div class="guide-tab" onclick="showGuide('mysql')">🗄️ MySQL</div>
+  <div class="guide-tab" onclick="showGuide('fastapi')">⚡ FastAPI</div>
+  <div class="guide-tab" onclick="showGuide('tailscale')">🛡️ Tailscale</div>
+</div>
+
+<!-- GUÍA SSH -->
+<div class="guide-panel active" id="guide-ssh">
+  <div class="guide-card">
+    <div class="guide-header">
+      <div class="guide-icon">🔌</div>
+      <div><div class="guide-title">Raspberry Pi OS + SSH headless</div><div class="guide-sub">Sin monitor ni teclado · desde Windows, Mac o Linux</div></div>
+    </div>
+    <div class="guide-body">
+
+      <div class="step-block">
+        <div class="step-title"><span class="step-num">1</span>Descargar Raspberry Pi Imager</div>
+        <div class="step-desc">Descarga el programa oficial desde <strong>raspberrypi.com/software</strong>. Gratuito para Windows, Mac y Linux. Inserta la microSD de la Pi en tu PC antes de continuar.</div>
+        <div class="info-box">💡 Usa <strong>Raspberry Pi OS Lite (64-bit)</strong> — sin escritorio. Al no tener interfaz gráfica consume menos RAM y CPU, dejando más recursos para FastAPI y MySQL.</div>
+      </div>
+
+      <div class="guide-divider"></div>
+
+      <div class="step-block">
+        <div class="step-title"><span class="step-num">2</span>Configurar antes de grabar — clave del headless</div>
+        <div class="step-desc">En el Imager, antes de grabar, haz clic en el ícono ⚙️ o presiona <code>Ctrl+Shift+X</code>. Esto es lo que configuras:</div>
+        <div class="cmd-block">
+          <div class="cmd-label">Opciones avanzadas del Imager — qué hace cada una</div>
+          <div class="cmd-content">
+            <div class="cmd-line"><span class="cmd-prompt">✓</span><span class="cmd-text">Habilitar SSH → Usar autenticación por contraseña</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Sin esto, la Pi bloquea todas las conexiones remotas por seguridad.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># SSH es el "cable virtual" que conecta tu PC con la Pi sin monitor.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">✓</span><span class="cmd-text">Usuario: pi   Contraseña: (la que elijas)</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Son las credenciales para entrar a la Pi por SSH.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Guárdalas bien — si las olvidás tenés que grabar la SD de nuevo.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">✓</span><span class="cmd-text">WiFi → SSID: (nombre de tu red)   Password: (clave WiFi)</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Le dice a la Pi a qué red conectarse al encender por primera vez.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Sin esto la Pi arranca sin red y no podés encontrarla desde tu PC.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">✓</span><span class="cmd-text">Hostname: raspberrypi.local</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Es el "nombre de dominio" de la Pi en tu red local.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Con este nombre podés conectarte sin saber la IP todavía.</span></div>
+          </div>
+        </div>
+        <div class="warn-box">⚠️ Si no configurás el WiFi aquí, la Pi no se conectará sola. No hay segunda oportunidad sin volver a grabar la SD.</div>
+      </div>
+
+      <div class="guide-divider"></div>
+
+      <div class="step-block">
+        <div class="step-title"><span class="step-num">3</span>Primer arranque y conexión SSH</div>
+        <div class="step-desc">Graba la imagen, insertá la SD en la Pi y encendela. Esperá 2 minutos. Luego desde tu PC:</div>
+        <div class="cmd-block">
+          <div class="cmd-label">Terminal de tu PC (Windows / Mac / Linux)</div>
+          <div class="cmd-content">
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">ping raspberrypi.local</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Envía un "hola" a la Pi y espera respuesta.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Si responde con tiempos en ms → la Pi está viva en la red.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Si no responde → esperá 1 minuto más y volvé a intentar.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">ssh pi@raspberrypi.local</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "ssh" = Secure Shell, protocolo de conexión remota cifrado.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "pi" = tu nombre de usuario en la Pi.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "raspberrypi.local" = el hostname que le diste en el Imager.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># A partir de este momento cada comando que escribás</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># se ejecuta DENTRO de la Pi, no en tu PC.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Es como teletransportarte a la Raspberry sin necesitar monitor.</span></div>
+          </div>
+        </div>
+        <div class="ok-box">✓ Cuando veas <code>pi@raspberrypi:~$</code> estás adentro. Todo lo que escribas ahora ocurre en la Pi.</div>
+      </div>
+
+      <div class="guide-divider"></div>
+
+      <div class="step-block">
+        <div class="step-title"><span class="step-num">4</span>Actualizar el sistema</div>
+        <div class="step-desc">Siempre lo primero al entrar por primera vez. Sin esto podés instalar versiones viejas o recibir errores raros.</div>
+        <div class="cmd-block">
+          <div class="cmd-label">Dentro de la Pi (vía SSH)</div>
+          <div class="cmd-content">
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">sudo apt update</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "sudo" = ejecutar como administrador (superusuario del sistema).</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Sin "sudo" el sistema te negaría el permiso para modificar paquetes.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "apt" = el gestor de paquetes de Linux (el equivalente a una App Store).</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "update" = descarga el catálogo actualizado de qué está disponible.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># ⚠️ No instala nada todavía, solo actualiza la lista interna.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">sudo apt upgrade -y</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "upgrade" = descarga e instala TODAS las actualizaciones disponibles.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Incluye parches de seguridad y versiones nuevas de Python, etc.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "-y" = responde "sí" automáticamente a todas las confirmaciones.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Puede tardar 3-8 minutos. Verás texto pasando — es normal.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-divider"></div>
+
+      <div class="step-block">
+        <div class="step-title"><span class="step-num">5</span>Ver IP y asignar IP fija</div>
+        <div class="step-desc">Sin IP fija, el router puede cambiarle la dirección a la Pi cada vez que se reinicia y Flutter perdería la conexión sin razón aparente.</div>
+        <div class="cmd-block">
+          <div class="cmd-label">Ver la IP actual y la MAC de la Pi</div>
+          <div class="cmd-content">
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">hostname -I</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Muestra la IP actual de la Pi, ej: 192.168.1.105</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Esta es la dirección que pondrás en Flutter como baseUrl.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Anotala — la usarás para probar antes de tener Tailscale.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">ip link show wlan0</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Muestra la dirección MAC de la interfaz WiFi (wlan0).</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Ejemplo de salida: "link/ether aa:bb:cc:dd:ee:ff"</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># La MAC es el identificador único del hardware de la Pi.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Entrá al panel de tu router (192.168.1.1), buscá esa MAC</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># en la sección DHCP y asignale siempre la misma IP fija.</span></div>
+          </div>
+        </div>
+        <div class="info-box">💡 Asignar la IP fija se hace desde el router, no desde la Pi. Buscá en el panel de tu router "Reserva DHCP" o "IP estática por MAC".</div>
+      </div>
+
+      <div class="guide-divider"></div>
+
+      <div class="step-block">
+        <div class="step-title"><span class="step-num">6</span>Videos recomendados — Pi OS + SSH</div>
+        <div class="step-desc">Mira estos antes o durante la Semana 1:</div>
+        <div style="display:flex;flex-direction:column;gap:0.55rem;margin-top:0.6rem;">
+          <a href="https://www.youtube.com/watch?v=0CUcVMX_rCg" target="_blank" style="display:flex;align-items:center;gap:0.85rem;background:rgba(255,0,0,0.07);border:1px solid rgba(255,80,80,0.25);border-radius:11px;padding:0.75rem 1rem;text-decoration:none;color:inherit;">
+            <div style="width:38px;height:38px;background:#c00;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">▶</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-weight:700;font-size:0.82rem;">Raspberry Pi 4 — Instalación Raspbian + SSH + VNC desde Cero</div>
+              <div style="font-size:0.68rem;color:var(--muted);font-family:'Space Mono',monospace;margin-top:0.1rem;">2024 · Español · Configuración completa paso a paso</div>
+            </div>
+            <div style="color:var(--muted);font-size:0.85rem;flex-shrink:0;">↗</div>
+          </a>
+          <a href="https://www.youtube.com/watch?v=6scCuCoLI1g" target="_blank" style="display:flex;align-items:center;gap:0.85rem;background:rgba(255,0,0,0.07);border:1px solid rgba(255,80,80,0.25);border-radius:11px;padding:0.75rem 1rem;text-decoration:none;color:inherit;">
+            <div style="width:38px;height:38px;background:#c00;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">▶</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-weight:700;font-size:0.82rem;">Acceder por SSH a Raspberry Pi 4 sin monitor tras la instalación</div>
+              <div style="font-size:0.68rem;color:var(--muted);font-family:'Space Mono',monospace;margin-top:0.1rem;">Español · Headless · Encontrar IP y conectarse por primera vez</div>
+            </div>
+            <div style="color:var(--muted);font-size:0.85rem;flex-shrink:0;">↗</div>
+          </a>
+          <a href="https://www.youtube.com/playlist?list=PLi3y-uEs6TANzxOfVtN37tYtd39nZGrQX" target="_blank" style="display:flex;align-items:center;gap:0.85rem;background:rgba(255,0,0,0.07);border:1px solid rgba(255,80,80,0.25);border-radius:11px;padding:0.75rem 1rem;text-decoration:none;color:inherit;">
+            <div style="width:38px;height:38px;background:#c00;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">▶</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-weight:700;font-size:0.82rem;">Raspberry Pi desde Cero — Playlist completa en español</div>
+              <div style="font-size:0.68rem;color:var(--muted);font-family:'Space Mono',monospace;margin-top:0.1rem;">Playlist · OS · SSH · red · comandos básicos Linux</div>
+            </div>
+            <div style="color:var(--muted);font-size:0.85rem;flex-shrink:0;">↗</div>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- GUÍA MYSQL -->
+<div class="guide-panel" id="guide-mysql">
+  <div class="guide-card">
+    <div class="guide-header">
+      <div class="guide-icon">🗄️</div>
+      <div><div class="guide-title">MySQL (MariaDB) en Raspberry Pi</div><div class="guide-sub">MariaDB es 100% compatible con MySQL · se instala con un comando</div></div>
+    </div>
+    <div class="guide-body">
+
+      <div class="step-block">
+        <div class="step-title"><span class="step-num">1</span>Instalar MariaDB</div>
+        <div class="step-desc">MariaDB es la versión de MySQL que viene en los repositorios oficiales de Raspberry Pi OS. Es idéntica en sintaxis SQL.</div>
+        <div class="cmd-block">
+          <div class="cmd-label">Dentro de la Pi (vía SSH)</div>
+          <div class="cmd-content">
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">sudo apt update</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Refresca el catálogo de paquetes. Siempre antes de instalar algo.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Sin esto podés instalar una versión vieja que ya fue reemplazada.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">sudo apt install mariadb-server -y</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "install mariadb-server" = descarga e instala el motor de base de datos.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "-y" = confirma automáticamente sin pedir aprobación.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Después de esto, MariaDB ya está corriendo en segundo plano.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">sudo systemctl status mariadb</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Verifica que el servicio esté activo.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Debés ver "Active: active (running)" en verde.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Si dice "inactive" ejecutá: sudo systemctl start mariadb</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-divider"></div>
+
+      <div class="step-block">
+        <div class="step-title"><span class="step-num">2</span>Asegurar la instalación — comando moderno de MariaDB</div>
+        <div class="step-desc">Por defecto MariaDB queda sin contraseña, lo que es un riesgo de seguridad. El comando para asegurarla cambió en versiones recientes.</div>
+        <div class="cmd-block">
+          <div class="cmd-label">⚠️ Usar este comando — NO el antiguo mysql_secure_installation</div>
+          <div class="cmd-content">
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">sudo mariadb-secure-installation</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># En versiones nuevas de MariaDB en Pi OS 64-bit, las herramientas</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># se renombraron de "mysql_*" a "mariadb-*" para evitar confusiones.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Si escribís "mysql_secure_installation" vas a recibir un error.</span></div>
+          </div>
+        </div>
+        <div class="step-desc" style="margin-top:0.75rem;">El asistente hace 7 preguntas. Respuestas recomendadas:</div>
+        <div class="cmd-block">
+          <div class="cmd-label">Respuestas dentro del asistente interactivo</div>
+          <div class="cmd-content">
+            <div class="cmd-line"><span class="cmd-prompt">1.</span><span class="cmd-text">Enter current password for root:</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># → Solo presioná Enter (vacío). Todavía no hay contraseña configurada.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">2.</span><span class="cmd-text">Switch to unix_socket authentication?</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># → Escribí n (No). Queremos autenticación por contraseña clásica,</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment">#   no por el usuario del sistema operativo. Python la necesita así.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">3.</span><span class="cmd-text">Change the root password?</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># → Escribí y (Sí) y luego tu contraseña segura.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># ⚠️ Al escribir la contraseña NO verás nada en pantalla (ni asteriscos).</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment">#    Es normal, es una medida de seguridad de Linux. Escribí y Enter.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">4.</span><span class="cmd-text">Remove anonymous users?</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># → Escribí y (Sí). Elimina usuarios de prueba que vienen por defecto</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment">#   y que cualquiera podría usar para acceder sin contraseña.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">5.</span><span class="cmd-text">Disallow root login remotely?</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># → Escribí y (Sí). Impide que alguien intente hackear el usuario</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment">#   "root" desde fuera de la Pi por la red. Root solo entra localmente.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">6.</span><span class="cmd-text">Remove test database and access to it?</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># → Escribí y (Sí). Borra una base de datos vacía de ejemplo</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment">#   que viene pre-instalada y no sirve para nada en producción.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">7.</span><span class="cmd-text">Reload privilege tables now?</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># → Escribí y (Sí). Aplica todos los cambios de permisos de inmediato.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment">#   Sin esto los cambios no toman efecto hasta reiniciar el servicio.</span></div>
+          </div>
+        </div>
+        <div class="ok-box">✓ Al terminar verás "Thanks for using MariaDB!" — base de datos blindada y lista.</div>
+        <div class="warn-box" style="margin-top:0.6rem;">⚠️ Guardá la contraseña de root en un lugar seguro. La vas a necesitar para conectar Python a la BD.</div>
+      </div>
+
+      <div class="guide-divider"></div>
+
+      <div class="step-block">
+        <div class="step-title"><span class="step-num">3</span>Crear la base de datos y las tablas</div>
+        <div class="cmd-block">
+          <div class="cmd-label">Entrar al CLI de MariaDB</div>
+          <div class="cmd-content">
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">sudo mariadb -u root -p</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "mariadb" = abre el cliente de línea de comandos de la base de datos.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "-u root" = conectarse como el usuario administrador "root".</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "-p" = pedir contraseña al conectar (la que creaste en el paso 2).</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Al entrar verás el prompt "MariaDB [(none)]>" — ya estás adentro.</span></div>
+          </div>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-label">Crear BD, usuario y tablas (dentro del CLI de MariaDB)</div>
+          <div class="cmd-content">
+            <div class="cmd-line"><span class="cmd-prompt">></span><span class="cmd-text">CREATE DATABASE sleep_app;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Crea la base de datos del proyecto. El nombre es libre,</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># pero acordate de usarlo igual en Python más adelante.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">></span><span class="cmd-text">CREATE USER 'appuser'@'localhost' IDENTIFIED BY 'tu_password';</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Crea un usuario específico para la app (NO uses root en Python).</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># 'appuser' = nombre del usuario para FastAPI.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># '@localhost' = solo puede conectarse desde la misma Pi, más seguro.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># 'tu_password' = contraseña que usará Python para conectarse.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">></span><span class="cmd-text">GRANT ALL ON sleep_app.* TO 'appuser'@'localhost';</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Otorga todos los permisos sobre sleep_app al usuario appuser.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Sin esto appuser no puede leer ni escribir tablas, FastAPI fallaría.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">></span><span class="cmd-text">FLUSH PRIVILEGES;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Recarga la tabla de permisos. Hace efectivos los GRANT anteriores.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Sin esto el sistema no "ve" los permisos que acabás de dar.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">></span><span class="cmd-text">USE sleep_app;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Selecciona la BD sleep_app como activa para los siguientes comandos.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Verás que el prompt cambia a "MariaDB [sleep_app]>".</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">></span><span class="cmd-text">CREATE TABLE registro_sueno (</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;&nbsp;id INT AUTO_INCREMENT PRIMARY KEY,</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment">&nbsp;&nbsp;# id: clave única que se incrementa sola. Identifica cada registro.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;&nbsp;fecha DATE NOT NULL,</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment">&nbsp;&nbsp;# fecha: el día de la noche de sueño. NOT NULL = obligatorio.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;&nbsp;horas DECIMAL(4,1) NOT NULL,</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment">&nbsp;&nbsp;# horas: permite decimales como 7.5. DECIMAL(4,1) = hasta 999.9</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;&nbsp;puntuacion INT DEFAULT 0,</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment">&nbsp;&nbsp;# puntuacion: 0 a 100. DEFAULT 0 si no se envía desde Flutter.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;&nbsp;notas TEXT</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment">&nbsp;&nbsp;# notas: campo libre, opcional. TEXT permite texto largo.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">></span><span class="cmd-text">);</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">></span><span class="cmd-text">EXIT;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Cierra la sesión del CLI y vuelve al terminal normal de la Pi.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-divider"></div>
+
+      <div class="step-block">
+        <div class="step-title"><span class="step-num">4</span>Insertar datos de prueba</div>
+        <div class="cmd-block">
+          <div class="cmd-label">Entrar con el usuario appuser e insertar datos</div>
+          <div class="cmd-content">
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">mariadb -u appuser -p sleep_app</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Conectarse como appuser (el usuario que usará Python/FastAPI).</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Buena práctica: probar siempre con el mismo usuario que usará la app.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">></span><span class="cmd-text">INSERT INTO registro_sueno (fecha, horas, puntuacion) VALUES</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">('2025-05-22', 7.0, 78), ('2025-05-23', 6.5, 70),</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">('2025-05-24', 8.0, 90), ('2025-05-25', 7.5, 85),</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">('2025-05-26', 6.0, 65), ('2025-05-27', 7.0, 80),</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">('2025-05-28', 7.5, 85);</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># INSERT = agrega filas a la tabla.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Estos 7 días simulan una semana de historial real para</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># que Flutter tenga algo que mostrar desde el primer día de prueba.</span></div>
+          </div>
+        </div>
+        <div class="ok-box">✓ Ya tenés 7 días de datos reales. Flutter los verá cuando conectes la app en la Semana 3.</div>
+      </div>
+
+      <div class="guide-divider"></div>
+
+      <div class="step-block">
+        <div class="step-title"><span class="step-num">5</span>Videos recomendados — MySQL en Raspberry Pi</div>
+        <div class="step-desc">Mirá estos antes del Día 3 de la Semana 1:</div>
+        <div style="display:flex;flex-direction:column;gap:0.55rem;margin-top:0.6rem;">
+          <a href="https://www.youtube.com/watch?v=sjtwZz5EPUY" target="_blank" style="display:flex;align-items:center;gap:0.85rem;background:rgba(255,0,0,0.07);border:1px solid rgba(255,80,80,0.25);border-radius:11px;padding:0.75rem 1rem;text-decoration:none;color:inherit;">
+            <div style="width:38px;height:38px;background:#c00;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">▶</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-weight:700;font-size:0.82rem;">Instalar MariaDB (MySQL) + phpMyAdmin en Linux / Raspberry Pi</div>
+              <div style="font-size:0.68rem;color:var(--muted);font-family:'Space Mono',monospace;margin-top:0.1rem;">Español · Comandos exactos · mariadb-secure-installation incluido</div>
+            </div>
+            <div style="color:var(--muted);font-size:0.85rem;flex-shrink:0;">↗</div>
+          </a>
+          <a href="https://www.youtube.com/watch?v=FxRllzulUcI" target="_blank" style="display:flex;align-items:center;gap:0.85rem;background:rgba(255,0,0,0.07);border:1px solid rgba(255,80,80,0.25);border-radius:11px;padding:0.75rem 1rem;text-decoration:none;color:inherit;">
+            <div style="width:38px;height:38px;background:#c00;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">▶</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-weight:700;font-size:0.82rem;">MySQL Server en Raspberry Pi — Crear bases de datos con MariaDB</div>
+              <div style="font-size:0.68rem;color:var(--muted);font-family:'Space Mono',monospace;margin-top:0.1rem;">Español · Crear BD · tablas · usuarios · muy claro</div>
+            </div>
+            <div style="color:var(--muted);font-size:0.85rem;flex-shrink:0;">↗</div>
+          </a>
+          <a href="https://www.youtube.com/watch?v=I3NT010WGnA" target="_blank" style="display:flex;align-items:center;gap:0.85rem;background:rgba(255,0,0,0.07);border:1px solid rgba(255,80,80,0.25);border-radius:11px;padding:0.75rem 1rem;text-decoration:none;color:inherit;">
+            <div style="width:38px;height:38px;background:#c00;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">▶</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-weight:700;font-size:0.82rem;">MySQL + phpMyAdmin en Raspberry Pi con Docker — Guía Completa</div>
+              <div style="font-size:0.68rem;color:var(--muted);font-family:'Space Mono',monospace;margin-top:0.1rem;">Español 2024 · Alternativa visual con interfaz gráfica</div>
+            </div>
+            <div style="color:var(--muted);font-size:0.85rem;flex-shrink:0;">↗</div>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- GUÍA FASTAPI -->
+<div class="guide-panel" id="guide-fastapi">
+  <div class="guide-card">
+    <div class="guide-header">
+      <div class="guide-icon">⚡</div>
+      <div><div class="guide-title">FastAPI + Uvicorn en Raspberry Pi</div><div class="guide-sub">El servidor que responde JSON a Flutter · Python puro</div></div>
+    </div>
+    <div class="guide-body">
+
+      <div class="step-block">
+        <div class="step-title"><span class="step-num">1</span>Instalar dependencias</div>
+        <div class="cmd-block">
+          <div class="cmd-label">Dentro de la Pi (vía SSH)</div>
+          <div class="cmd-content">
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">sudo apt install python3-pip python3-venv -y</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "python3-pip" = el gestor de paquetes de Python (instala librerías).</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "python3-venv" = permite crear entornos virtuales de Python.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">mkdir ~/sleep-api && cd ~/sleep-api</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "mkdir" = crea una carpeta llamada "sleep-api" en el home de la Pi.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "&&" = ejecuta el siguiente comando solo si el anterior tuvo éxito.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "cd" = entra a esa carpeta. Todos los archivos del proyecto van aquí.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">python3 -m venv venv</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Crea un entorno virtual llamado "venv" dentro del proyecto.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Un entorno virtual aísla las librerías de este proyecto del sistema.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Así FastAPI no interfiere con otros programas de Python en la Pi.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">source venv/bin/activate</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "Activa" el entorno virtual. El prompt cambia a "(venv) pi@raspberrypi"</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Eso significa que todo pip install va ahora al entorno, no al sistema.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># ⚠️ Debés activarlo CADA VEZ que abras una nueva sesión SSH.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">pip install "fastapi[standard]" PyMySQL</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "fastapi[standard]" = instala FastAPI + Uvicorn + extras recomendados.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "PyMySQL" = conector Python para hablar con MariaDB/MySQL.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Sin PyMySQL, Python no puede conectarse a la base de datos.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-divider"></div>
+
+      <div class="step-block">
+        <div class="step-title"><span class="step-num">2</span>Crear el archivo main.py</div>
+        <div class="cmd-block">
+          <div class="cmd-label">Crear y editar el archivo con nano</div>
+          <div class="cmd-content">
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">nano ~/sleep-api/main.py</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "nano" = editor de texto en la terminal. Abre el archivo para editarlo.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Para guardar: Ctrl+O → Enter. Para salir: Ctrl+X.</span></div>
+          </div>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-label">Contenido de main.py — con explicación de cada parte</div>
+          <div class="cmd-content">
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">from fastapi import FastAPI</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Importa la clase principal de FastAPI para crear la app.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">from fastapi.middleware.cors import CORSMiddleware</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># CORS permite que Flutter (otro dominio/IP) haga peticiones al server.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Sin esto el servidor bloquearía las peticiones de la app.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">import pymysql</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># El conector que instalamos. Permite que Python hable con MariaDB.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">app = FastAPI()</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Crea la instancia principal de la aplicación. Todo se registra aquí.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">app.add_middleware(CORSMiddleware, allow_origins=["*"])</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># allow_origins=["*"] = acepta peticiones desde cualquier IP.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Ideal para desarrollo. En producción limitarías a IPs específicas.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">def get_conn():</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Función que abre una conexión a la base de datos.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Se llama cada vez que un endpoint necesita consultar datos.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;&nbsp;return pymysql.connect(host="localhost",</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment">&nbsp;&nbsp;# "localhost" = la BD está en la misma Pi que FastAPI.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;&nbsp;&nbsp;&nbsp;user="appuser", password="tu_password",</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment">&nbsp;&nbsp;&nbsp;&nbsp;# Usar appuser, NUNCA root en la app. Principio de mínimo privilegio.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;&nbsp;&nbsp;&nbsp;database="sleep_app", cursorclass=pymysql.cursors.DictCursor)</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment">&nbsp;&nbsp;&nbsp;&nbsp;# DictCursor devuelve las filas como diccionarios Python,</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment">&nbsp;&nbsp;&nbsp;&nbsp;# que FastAPI convierte automáticamente a JSON para Flutter.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">@app.get("/historial")</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "@app.get" = registra esta función como endpoint HTTP GET.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Cuando Flutter haga GET a /historial, se ejecuta la función abajo.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">def historial():</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;&nbsp;conn = get_conn()</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;&nbsp;with conn.cursor() as cur:</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment">&nbsp;&nbsp;# "with" cierra el cursor automáticamente al terminar. Buena práctica.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;&nbsp;&nbsp;&nbsp;cur.execute("SELECT * FROM registro_sueno ORDER BY fecha DESC LIMIT 7")</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment">&nbsp;&nbsp;&nbsp;&nbsp;# Trae los últimos 7 días ordenados del más reciente al más viejo.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;&nbsp;&nbsp;&nbsp;rows = cur.fetchall()</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment">&nbsp;&nbsp;&nbsp;&nbsp;# "fetchall" guarda todos los resultados en la variable "rows".</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;&nbsp;conn.close()</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment">&nbsp;&nbsp;# Cierra la conexión. Importante para no agotar las conexiones disponibles.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;&nbsp;return {"historial": rows}</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment">&nbsp;&nbsp;# FastAPI convierte este dict Python a JSON automáticamente.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment">&nbsp;&nbsp;# Flutter recibirá: {"historial": [{...}, {...}, ...]}</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-divider"></div>
+
+      <div class="step-block">
+        <div class="step-title"><span class="step-num">3</span>Arrancar el servidor</div>
+        <div class="cmd-block">
+          <div class="cmd-label">Lanzar FastAPI</div>
+          <div class="cmd-content">
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">cd ~/sleep-api && source venv/bin/activate</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Entrá a la carpeta del proyecto y activá el entorno virtual.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Si no activás el venv, Python no encontrará FastAPI ni PyMySQL.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">uvicorn main:app --host 0.0.0.0 --port 8000 --reload</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "uvicorn" = el servidor web que corre la app FastAPI.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "main:app" = archivo main.py, objeto "app" dentro de él.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "--host 0.0.0.0" = acepta conexiones de CUALQUIER IP de la red.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># ⚠️ Sin este flag, solo la Pi misma puede acceder. Flutter no llegaría.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "--port 8000" = el puerto donde escucha. Como el canal de TV del server.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "--reload" = reinicia automáticamente si modificás el código.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Solo usar --reload en desarrollo, quitarlo en producción.</span></div>
+          </div>
+        </div>
+        <div class="ok-box">✓ Abrí el navegador en <code>http://IP-DE-LA-PI:8000/historial</code> y verás el JSON con los datos de MySQL.</div>
+        <div class="info-box" style="margin-top:0.6rem;">💡 FastAPI genera documentación interactiva automáticamente en <code>http://IP-DE-LA-PI:8000/docs</code> — podés probar todos los endpoints desde el navegador sin usar Flutter todavía.</div>
+      </div>
+
+      <div class="guide-divider"></div>
+
+      <div class="step-block">
+        <div class="step-title"><span class="step-num">4</span>Autoarranque al encender la Pi — servicio systemd</div>
+        <div class="step-desc">Para que FastAPI arranque solo cada vez que la Pi se enciende, sin necesidad de entrar por SSH.</div>
+        <div class="cmd-block">
+          <div class="cmd-label">Crear el archivo de servicio</div>
+          <div class="cmd-content">
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">sudo nano /etc/systemd/system/sleep-api.service</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Crea un archivo de configuración en la carpeta de servicios del sistema.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "systemd" es el gestor de servicios de Linux — controla qué</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># programas arrancan automáticamente al encender el sistema.</span></div>
+          </div>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-label">Contenido del archivo .service</div>
+          <div class="cmd-content">
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">[Unit]</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">Description=Sleep App FastAPI Server</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Descripción legible del servicio. Aparece en los logs del sistema.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">After=network.target</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Arranca DESPUÉS de que la red esté lista. Sin esto podría arrancar</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># antes de tener WiFi y fallar al intentar escuchar en la red.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">[Service]</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">User=pi</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># El servicio corre como el usuario "pi", no como root. Más seguro.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">WorkingDirectory=/home/pi/sleep-api</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># La carpeta desde donde se ejecuta uvicorn. Debe existir.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">ExecStart=/home/pi/sleep-api/venv/bin/uvicorn main:app --host 0.0.0.0 --port 8000</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Ruta absoluta al uvicorn del entorno virtual. Importante: sin --reload</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># en producción, porque --reload consume más recursos.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">Restart=always</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Si FastAPI se cae por algún error, systemd lo reinicia automáticamente.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Hace que el servidor sea mucho más confiable sin intervención manual.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">[Install]</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">WantedBy=multi-user.target</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Define en qué estado del arranque del sistema se activa este servicio.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "multi-user" = cuando el sistema ya está listo para múltiples usuarios.</span></div>
+          </div>
+        </div>
+        <div class="cmd-block">
+          <div class="cmd-label">Activar y arrancar el servicio</div>
+          <div class="cmd-content">
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">sudo systemctl daemon-reload</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Le dice a systemd que recargue la lista de servicios.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Necesario siempre que creás o modificás un archivo .service.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">sudo systemctl enable sleep-api</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "enable" = marca el servicio para que arranque automáticamente al encender.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Crea un enlace simbólico en la secuencia de arranque del sistema.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">sudo systemctl start sleep-api</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "start" = arranca el servicio ahora mismo, sin reiniciar la Pi.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">sudo systemctl status sleep-api</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Muestra si el servicio está corriendo correctamente.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Buscá "Active: active (running)" para confirmar que todo está bien.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Si hay error, verás el mensaje exacto aquí para saber qué falló.</span></div>
+          </div>
+        </div>
+        <div class="ok-box">✓ Ahora FastAPI arranca solo cada vez que encendés la Pi. No hace falta entrar por SSH para iniciarlo.</div>
+      </div>
+
+      <div class="guide-divider"></div>
+
+      <div class="step-block">
+        <div class="step-title"><span class="step-num">5</span>Videos recomendados — FastAPI en Python</div>
+        <div class="step-desc">Mirá estos durante los Días 5–7 de la Semana 1:</div>
+        <div style="display:flex;flex-direction:column;gap:0.55rem;margin-top:0.6rem;">
+          <a href="https://www.youtube.com/watch?v=TatMVGGMxY0" target="_blank" style="display:flex;align-items:center;gap:0.85rem;background:rgba(255,0,0,0.07);border:1px solid rgba(255,80,80,0.25);border-radius:11px;padding:0.75rem 1rem;text-decoration:none;color:inherit;">
+            <div style="width:38px;height:38px;background:#c00;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">▶</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-weight:700;font-size:0.82rem;">El tutorial mejor explicado para aprender FastAPI desde 0</div>
+              <div style="font-size:0.68rem;color:var(--muted);font-family:'Space Mono',monospace;margin-top:0.1rem;">Español 2024 · Fundamentos · instalación · GET y POST · muy claro</div>
+            </div>
+            <div style="color:var(--muted);font-size:0.85rem;flex-shrink:0;">↗</div>
+          </a>
+          <a href="https://www.youtube.com/watch?v=pmbSKoaxEho" target="_blank" style="display:flex;align-items:center;gap:0.85rem;background:rgba(255,0,0,0.07);border:1px solid rgba(255,80,80,0.25);border-radius:11px;padding:0.75rem 1rem;text-decoration:none;color:inherit;">
+            <div style="width:38px;height:38px;background:#c00;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">▶</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-weight:700;font-size:0.82rem;">Introducción a FastAPI — API lista para producción en 30 min</div>
+              <div style="font-size:0.68rem;color:var(--muted);font-family:'Space Mono',monospace;margin-top:0.1rem;">Español · Webinar · validación automática · Swagger docs</div>
+            </div>
+            <div style="color:var(--muted);font-size:0.85rem;flex-shrink:0;">↗</div>
+          </a>
+          <a href="https://www.youtube.com/playlist?list=PLHftsZss8mw7pSRpCyd-TM4Mu43XdyB3R" target="_blank" style="display:flex;align-items:center;gap:0.85rem;background:rgba(255,0,0,0.07);border:1px solid rgba(255,80,80,0.25);border-radius:11px;padding:0.75rem 1rem;text-decoration:none;color:inherit;">
+            <div style="width:38px;height:38px;background:#c00;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">▶</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-weight:700;font-size:0.82rem;">FastAPI 2025 — Playlist completa desde cero</div>
+              <div style="font-size:0.68rem;color:var(--muted);font-family:'Space Mono',monospace;margin-top:0.1rem;">Español · Playlist · Base de datos · MySQL · endpoints CRUD</div>
+            </div>
+            <div style="color:var(--muted);font-size:0.85rem;flex-shrink:0;">↗</div>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- GUÍA TAILSCALE -->
+<div class="guide-panel" id="guide-tailscale">
+  <div class="guide-card">
+    <div class="guide-header">
+      <div class="guide-icon">🛡️</div>
+      <div><div class="guide-title">Tailscale en Raspberry Pi</div><div class="guide-sub">Acceso desde cualquier red · sin abrir puertos · gratis</div></div>
+    </div>
+    <div class="guide-body">
+
+      <div class="step-block">
+        <div class="step-title"><span class="step-num">1</span>Crear cuenta en Tailscale</div>
+        <div class="step-desc">Entrar a <strong>tailscale.com</strong> y crear una cuenta gratuita con Google o GitHub. El plan gratuito personal soporta hasta 100 dispositivos.</div>
+        <div class="info-box">💡 Los 4 del equipo pueden conectar sus teléfonos a la misma cuenta, o cada uno puede tener su cuenta e invitarse mutuamente desde el panel de administración.</div>
+      </div>
+
+      <div class="guide-divider"></div>
+
+      <div class="step-block">
+        <div class="step-title"><span class="step-num">2</span>Instalar Tailscale en la Pi</div>
+        <div class="cmd-block">
+          <div class="cmd-label">Dentro de la Pi (vía SSH)</div>
+          <div class="cmd-content">
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">curl -fsSL https://tailscale.com/install.sh | sh</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "curl" = descarga un archivo desde internet.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "-fsSL" = fail silently, follow redirects, SSL. Flags de seguridad.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "| sh" = pasa el contenido descargado directamente al intérprete shell.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Este comando descarga y ejecuta el instalador oficial de Tailscale.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Agrega el repositorio oficial y luego instala el paquete.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-divider"></div>
+
+      <div class="step-block">
+        <div class="step-title"><span class="step-num">3</span>Autenticar la Pi en tu red Tailscale</div>
+        <div class="cmd-block">
+          <div class="cmd-label">Conectar la Pi a la cuenta</div>
+          <div class="cmd-content">
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">sudo tailscale up</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "tailscale up" = conecta la Pi a la red privada de Tailscale.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Va a mostrarte una URL del tipo: https://login.tailscale.com/a/xxxxx</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Copiá esa URL, abríla en el navegador de tu PC e iniciá sesión.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Eso "empareja" la Pi con tu cuenta de Tailscale permanentemente.</span></div>
+          </div>
+        </div>
+        <div class="ok-box">✓ La Pi aparece en tailscale.com/admin con una IP permanente tipo <code>100.x.x.x</code>. Esa IP no cambia nunca.</div>
+      </div>
+
+      <div class="guide-divider"></div>
+
+      <div class="step-block">
+        <div class="step-title"><span class="step-num">4</span>Autoarranque de Tailscale al encender</div>
+        <div class="cmd-block">
+          <div class="cmd-label">Habilitar como servicio del sistema</div>
+          <div class="cmd-content">
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">sudo systemctl enable tailscaled</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># "enable" = arranca Tailscale automáticamente al encender la Pi.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Sin esto, al reiniciar la Pi deberías conectar Tailscale manualmente.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># La Pi quedaría inaccesible desde fuera de casa hasta que lo hagas.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">sudo systemctl start tailscaled</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Arranca el servicio ahora mismo sin necesidad de reiniciar.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-divider"></div>
+
+      <div class="step-block">
+        <div class="step-title"><span class="step-num">5</span>Instalar Tailscale en los 4 teléfonos Android</div>
+        <div class="step-desc">Buscar <strong>"Tailscale"</strong> en Google Play Store, instalar e iniciar sesión con la misma cuenta. Desde ese momento los teléfonos y la Pi están en la misma red virtual.</div>
+        <div class="info-box">💡 Una vez conectados, los teléfonos llegan a la Pi usando la IP <code>100.x.x.x</code> desde cualquier WiFi, datos móviles o incluso desde otro país.</div>
+      </div>
+
+      <div class="guide-divider"></div>
+
+      <div class="step-block">
+        <div class="step-title"><span class="step-num">6</span>Actualizar la URL en Flutter</div>
+        <div class="cmd-block">
+          <div class="cmd-label">En el archivo de servicio HTTP de tu proyecto Dart</div>
+          <div class="cmd-content">
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment">// Antes (solo funciona en el WiFi de casa):</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">const String baseUrl = "http://192.168.1.105:8000";</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment">// Después (funciona desde cualquier red con Tailscale activo):</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">const String baseUrl = "http://100.x.x.x:8000";</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment">// La IP 100.x.x.x es la que te dio Tailscale en el panel de admin.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment">// Ese es el único cambio necesario en Flutter para acceso remoto.</span></div>
+          </div>
+        </div>
+        <div class="ok-box">✓ Con este cambio la app funciona dentro y fuera de casa sin ninguna configuración adicional.</div>
+      </div>
+
+      <div class="guide-divider"></div>
+
+      <div class="step-block">
+        <div class="step-title"><span class="step-num">7</span>Comandos útiles de Tailscale</div>
+        <div class="cmd-block">
+          <div class="cmd-label">Referencia rápida</div>
+          <div class="cmd-content">
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">tailscale ip</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Muestra tu IP de Tailscale (la 100.x.x.x). Usala en Flutter.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">tailscale status</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Lista todos los dispositivos conectados a tu red Tailscale.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Útil para verificar que los 4 teléfonos estén en la red.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text">&nbsp;</span></div>
+            <div class="cmd-line"><span class="cmd-prompt">$</span><span class="cmd-text">tailscale ping 100.x.x.x</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Prueba la conexión con otro dispositivo de la red Tailscale.</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># Si responde → Flutter puede conectarse. Si no → revisar que Tailscale</span></div>
+            <div class="cmd-line"><span class="cmd-prompt"></span><span class="cmd-text cmd-comment"># esté activo tanto en la Pi como en el teléfono.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="guide-divider"></div>
+
+      <div class="step-block">
+        <div class="step-title"><span class="step-num">8</span>Videos recomendados — Tailscale en Raspberry Pi</div>
+        <div class="step-desc">Mirá estos durante los Días 26–27 de la Semana 4:</div>
+        <div style="display:flex;flex-direction:column;gap:0.55rem;margin-top:0.6rem;">
+          <a href="https://www.youtube.com/watch?v=bBCkbnAfDfc" target="_blank" style="display:flex;align-items:center;gap:0.85rem;background:rgba(255,0,0,0.07);border:1px solid rgba(255,80,80,0.25);border-radius:11px;padding:0.75rem 1rem;text-decoration:none;color:inherit;">
+            <div style="width:38px;height:38px;background:#c00;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">▶</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-weight:700;font-size:0.82rem;">Configurar Tailscale para Raspberry Pi — Acceso remoto desde cualquier red</div>
+              <div style="font-size:0.68rem;color:var(--muted);font-family:'Space Mono',monospace;margin-top:0.1rem;">Español 2026 · Paso a paso · SSH remoto · muy completo</div>
+            </div>
+            <div style="color:var(--muted);font-size:0.85rem;flex-shrink:0;">↗</div>
+          </a>
+          <a href="https://www.youtube.com/watch?v=Ifv2dPofbQg" target="_blank" style="display:flex;align-items:center;gap:0.85rem;background:rgba(255,0,0,0.07);border:1px solid rgba(255,80,80,0.25);border-radius:11px;padding:0.75rem 1rem;text-decoration:none;color:inherit;">
+            <div style="width:38px;height:38px;background:#c00;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">▶</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-weight:700;font-size:0.82rem;">Instalación VPN Tailscale — Conecta dispositivos sin abrir puertos</div>
+              <div style="font-size:0.68rem;color:var(--muted);font-family:'Space Mono',monospace;margin-top:0.1rem;">Español 2024 · Instalación rápida · móvil + PC + Raspberry Pi</div>
+            </div>
+            <div style="color:var(--muted);font-size:0.85rem;flex-shrink:0;">↗</div>
+          </a>
+          <a href="https://www.youtube.com/watch?v=IJWjHZYo7kE" target="_blank" style="display:flex;align-items:center;gap:0.85rem;background:rgba(255,0,0,0.07);border:1px solid rgba(255,80,80,0.25);border-radius:11px;padding:0.75rem 1rem;text-decoration:none;color:inherit;">
+            <div style="width:38px;height:38px;background:#c00;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">▶</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-weight:700;font-size:0.82rem;">Easily Setup a VPN on Raspberry Pi using Tailscale</div>
+              <div style="font-size:0.68rem;color:var(--muted);font-family:'Space Mono',monospace;margin-top:0.1rem;">Inglés 2025 · Pi My Life Up · Muy completo · con guía escrita</div>
+            </div>
+            <div style="color:var(--muted);font-size:0.85rem;flex-shrink:0;">↗</div>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ACCESO REMOTO COMPARATIVA -->
+<div class="section-title" id="remoto">Alternativas de acceso remoto</div>
+<div class="remote-grid">
+  <div class="remote-card">
+    <div class="remote-card-title">🛡️ Tailscale <span class="remote-rec">★ RECOMENDADO</span></div>
+    <div class="pros-cons">
+      <div class="pro">✓ Sin abrir puertos en el router</div>
+      <div class="pro">✓ IP fija permanente (100.x.x.x)</div>
+      <div class="pro">✓ Gratis, fácil, rápido</div>
+      <div class="pro">✓ Funciona con datos móviles</div>
+    </div>
+  </div>
+  <div class="remote-card">
+    <div class="remote-card-title">⚡ ngrok</div>
+    <ol class="remote-steps">
+      <li>Cuenta en <strong>ngrok.com</strong></li>
+      <li><code>snap install ngrok</code> en la Pi</li>
+      <li><code>ngrok http 8000</code> → URL pública</li>
+      <li>Flutter usa esa URL</li>
+    </ol>
+    <div class="pros-cons">
+      <div class="pro">✓ Listo en 5 minutos</div>
+      <div class="con">✗ URL cambia cada vez (plan gratis)</div>
+    </div>
+  </div>
+  <div class="remote-card">
+    <div class="remote-card-title">☁️ Cloudflare Tunnel</div>
+    <ol class="remote-steps">
+      <li>Cuenta en <strong>cloudflare.com</strong></li>
+      <li>Instalar <code>cloudflared</code></li>
+      <li>Crear túnel con dominio fijo</li>
+    </ol>
+    <div class="pros-cons">
+      <div class="pro">✓ Dominio fijo permanente</div>
+      <div class="con">✗ Más configuración inicial</div>
+    </div>
+  </div>
+  <div class="remote-card">
+    <div class="remote-card-title">📡 Port Forward + DuckDNS</div>
+    <ol class="remote-steps">
+      <li>Panel del router → abrir puerto 8000</li>
+      <li>Dominio gratis en <strong>duckdns.org</strong></li>
+      <li>Script en la Pi para actualizar IP</li>
+    </ol>
+    <div class="pros-cons">
+      <div class="pro">✓ Sin depender de terceros</div>
+      <div class="con">✗ Requiere acceso al router</div>
+    </div>
+  </div>
+</div>
+
+<!-- CURSOS -->
+<div class="section-title" id="cursos">Cursos de YouTube recomendados</div>
+<div class="courses-cols">
+  <div>
+    <div class="course-section-title" style="color:var(--accent2)"><span></span>Flutter & Dart</div>
+    <a class="course-card" href="https://www.youtube.com/watch?v=IKG1eV2SetA" target="_blank"><div class="course-logo">▶</div><div class="course-info"><div class="course-title">Flutter y Dart desde CERO · 9 horas</div><div class="course-meta">2025 · Español · Android & iOS completo</div></div><div class="course-arrow">↗</div></a>
+    <a class="course-card" href="https://www.youtube.com/watch?v=t_P_UtAqipk" target="_blank"><div class="course-logo">▶</div><div class="course-info"><div class="course-title">Flutter Móvil: De cero a experto</div><div class="course-meta">Fernando Herrera · Serie completa</div></div><div class="course-arrow">↗</div></a>
+    <a class="course-card" href="https://www.youtube.com/playlist?list=PLutrh4gv1YI8ap4JO23lN81JOSZJ3i5OO" target="_blank"><div class="course-logo">▶</div><div class="course-info"><div class="course-title">Flutter desde cero · Playlist completa</div><div class="course-meta">Widgets · layouts · navegación</div></div><div class="course-arrow">↗</div></a>
+
+    <div class="course-section-title" style="color:var(--accent1); margin-top:1.1rem"><span></span>FastAPI</div>
+    <a class="course-card" href="https://www.youtube.com/playlist?list=PLHftsZss8mw7pSRpCyd-TM4Mu43XdyB3R" target="_blank"><div class="course-logo">▶</div><div class="course-info"><div class="course-title">FastAPI 2025 · Playlist completa</div><div class="course-meta">Español · backend Python · gratuito</div></div><div class="course-arrow">↗</div></a>
+    <a class="course-card" href="https://www.youtube.com/watch?v=gIdLS_ShdnM" target="_blank"><div class="course-logo">▶</div><div class="course-info"><div class="course-title">¿Qué es FastAPI? — Primera clase</div><div class="course-meta">Punto de entrada ideal · Español</div></div><div class="course-arrow">↗</div></a>
+  </div>
+
+  <div>
+    <div class="course-section-title" style="color:var(--accent4)"><span></span>Git & GitHub</div>
+    <a class="course-card" href="https://www.youtube.com/watch?v=9ZJ-K-zk_Go" target="_blank"><div class="course-logo">▶</div><div class="course-info"><div class="course-title">Git desde CERO · Curso Completo 2024</div><div class="course-meta">add · commit · push · ramas · español</div></div><div class="course-arrow">↗</div></a>
+    <a class="course-card" href="https://www.youtube.com/watch?v=3GymExBkKjE" target="_blank"><div class="course-logo">▶</div><div class="course-info"><div class="course-title">Git y GitHub para Principiantes</div><div class="course-meta">Trabajo en equipo · ramas · español</div></div><div class="course-arrow">↗</div></a>
+    <a class="course-card" href="https://www.youtube.com/watch?v=CK5ZcKZsMRs" target="_blank"><div class="course-logo">▶</div><div class="course-info"><div class="course-title">Git y Github · Principiantes</div><div class="course-meta">Muy claro · Control de versiones</div></div><div class="course-arrow">↗</div></a>
+
+    <div class="course-section-title" style="color:var(--accent3); margin-top:1.1rem"><span></span>HTTP en Flutter · Semana 3</div>
+    <a class="course-card" href="https://www.youtube.com/results?search_query=flutter+http+futurebuilder+json+espanol+2024" target="_blank"><div class="course-logo">▶</div><div class="course-info"><div class="course-title">Flutter HTTP + FutureBuilder + JSON</div><div class="course-meta">Buscar en YouTube · clave semana 3</div></div><div class="course-arrow">↗</div></a>
+    <a class="course-card" href="https://www.youtube.com/results?search_query=flutter+async+await+dart+espanol" target="_blank"><div class="course-logo">▶</div><div class="course-info"><div class="course-title">Dart async / await — Flutter</div><div class="course-meta">Buscar en YouTube · para la conexión</div></div><div class="course-arrow">↗</div></a>
+  </div>
+</div>
+
+<!-- REGLAS -->
+<div class="section-title" id="reglas">Reglas de oro del equipo</div>
+<div class="footer-rules">
+  <div class="rule-card"><span class="rule-num">01</span><strong>JSON acordado el día 1.</strong> Antes de escribir código, acuerden la estructura exacta del JSON. Escríbanla en el repo y no la cambien sin avisar.</div>
+  <div class="rule-card"><span class="rule-num">02</span><strong>GitHub desde el día 1.</strong> Un repo con <code>/backend</code> y <code>/flutter</code>. Cada persona su rama. Sin esto, 4 personas es caos de archivos por WhatsApp.</div>
+  <div class="rule-card"><span class="rule-num">03</span><strong>Flutter con datos falsos primero.</strong> La UI no espera al backend. JSON hardcodeado hasta semana 3 — luego es cambiar una línea.</div>
+  <div class="rule-card"><span class="rule-num">04</span><strong>Un bug no para el calendario.</strong> Si algo falla, devuelve JSON fijo sin tocar la BD ese día. Seguir avanzando siempre.</div>
+</div>
+
+<script>
+  function showGuide(id) {
+    document.querySelectorAll('.guide-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.guide-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('guide-' + id).classList.add('active');
+    event.target.classList.add('active');
+  }
+</script>
+</body>
+</html>
